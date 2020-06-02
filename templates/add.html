@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Registrar Suscripcion</h1>
+    <!-- <form method="POST">{% csrf_token %}
+        {{ form.as_p }}
+        <p>
+            <button type="submit">
+                Guardar
+            </button>
+        </p>
+    </form>
+    <ul>
+        {% for suscriptor in suscripciones  %}
+          <li>{{ suscriptor.full_name }} - {{ suscriptor.email }}</li>
+        {% endfor %}
+    </ul> -->
+
+
+    <form id="form-suscripcion" method="post">
+        {{ form.as_p }}
+    </form>
+
+    <button onclick="GuardarDatos()">
+        Guardar
+    </button>
+
+    <ul id="ul-suscriptor">
+        {% for suscriptor in suscripciones  %}
+          <li>{{ suscriptor.full_name }} - {{ suscriptor.email }}</li>
+        {% endfor %}
+    </ul>
+
+
+
+
+
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function GuardarDatos() {
+            var form = new FormData(document.getElementById('form-suscripcion'));
+            var lista = document.getElementById('ul-suscriptor');
+            //
+            fetch("/", {
+                method: "POST",
+                body: form,
+                headers: {
+                    "X-CSRFToken": getCookie('csrftoken'),
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            }).then(
+                function(response) {
+                    return response.json()
+                }
+            ).then(
+                function(data) {
+                    array_sus = data.suscriptores;
+                    var li = document.createElement('li');
+                    li.innerHTML = array_sus[array_sus.length - 1].full_name + array_sus[array_sus.length - 1].email 
+                    //
+                    lista.appendChild(li);
+                }
+            )
+        }
+    </script>
+</body>
+</html>
